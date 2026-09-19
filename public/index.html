@@ -5,110 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animeshon - Streaming Anime Elegan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #e2e8f0; scroll-behavior: smooth; }
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.4);
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body { 
+            background-color: #0b0f19; /* Latar belakang gelap seperti referensi */
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth; 
         }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
+        
+        /* Tema Warna Kustom */
+        .bg-card { background-color: #1a1f2e; }
+        .text-accent { color: #8b5cf6; } /* Ungu seperti tombol 'Tonton Sekarang' */
+        .bg-accent { background-color: #8b5cf6; }
+        .hover-bg-accent:hover { background-color: #7c3aed; }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
         .loader-spin { animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Loading Overlay */
-        #global-loader {
-            transition: opacity 0.3s ease-in-out;
-        }
+        #global-loader { transition: opacity 0.3s ease-in-out; }
         .fade-out { opacity: 0; pointer-events: none; }
+
+        /* Gradasi Hero Section */
+        .hero-gradient {
+            background: linear-gradient(0deg, #0b0f19 0%, rgba(11, 15, 25, 0.7) 40%, rgba(11, 15, 25, 0.1) 100%);
+        }
     </style>
 </head>
-<body class="font-sans antialiased selection:bg-blue-500 selection:text-white pb-20">
+<body class="antialiased selection:bg-purple-500 selection:text-white pb-10">
 
     <!-- Global Loader -->
-    <div id="global-loader" class="fixed inset-0 bg-slate-900/95 z-[100] flex flex-col justify-center items-center">
-        <div class="loader-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-        <p class="text-blue-400 font-bold animate-pulse text-lg tracking-wider">ANIMESHON</p>
-        <p class="text-slate-500 text-sm mt-2">Memuat data...</p>
+    <div id="global-loader" class="fixed inset-0 bg-[#0b0f19] z-[100] flex flex-col justify-center items-center">
+        <div class="loader-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-purple-500 mb-4"></div>
+        <p class="text-purple-400 font-bold tracking-widest">ANIMESHON</p>
     </div>
 
-    <!-- Navbar Aktif -->
-    <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Navbar -->
+    <nav class="bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <a href="#home" class="flex items-center">
-                    <h1 class="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600 hover:scale-105 transition-transform">ANIMESHON</h1>
-                </a>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <form id="search-form" class="relative">
-                        <input type="text" id="search-input" placeholder="Cari anime..." class="bg-slate-800 border border-slate-700 text-sm rounded-full pl-4 pr-10 py-1.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 w-48 transition-all">
-                        <button type="submit" class="absolute right-3 top-1.5 text-slate-400 hover:text-white">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        </button>
+                <!-- Logo & Menu Kiri -->
+                <div class="flex items-center space-x-8">
+                    <a href="#home" class="flex items-center space-x-2">
+                        <i class="fas fa-play text-purple-500 text-xl"></i>
+                        <h1 class="text-xl font-bold tracking-tight text-white">animeshon</h1>
+                    </a>
+                    
+                    <div class="hidden lg:flex space-x-6">
+                        <a href="#home" class="text-white font-medium text-sm flex items-center space-x-2 nav-link" data-target="home">
+                            <i class="fas fa-home opacity-70"></i><span>Beranda</span>
+                        </a>
+                        <a href="#animelist" class="text-gray-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="animelist">Anime</a>
+                        <a href="#jadwal" class="text-gray-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="jadwal">Jadwal</a>
+                        <a href="#animelist" class="text-gray-400 hover:text-white font-medium text-sm transition-colors nav-link">Genre</a>
+                    </div>
+                </div>
+
+                <!-- Search & Kanan -->
+                <div class="hidden md:flex items-center space-x-6 flex-1 justify-end">
+                    <form id="search-form" class="relative w-full max-w-md">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-500 text-sm"></i>
+                        <input type="text" id="search-input" placeholder="Cari anime, judul, atau genre..." class="w-full bg-[#1a1f2e] border border-gray-700 text-sm rounded-full pl-10 pr-4 py-2 focus:outline-none focus:border-purple-500 transition-all text-gray-300 placeholder-gray-500">
                     </form>
-                    <a href="#home" class="text-slate-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="home">Beranda</a>
-                    <a href="#jadwal" class="text-slate-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="jadwal">Jadwal Rilis</a>
-                    <a href="#animelist" class="text-slate-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="animelist">Daftar Anime</a>
+                    
+                    <button class="text-gray-400 hover:text-white"><i class="far fa-bell text-lg"></i></button>
+                    <div class="h-8 w-8 rounded-full bg-gray-700 overflow-hidden border border-gray-600">
+                        <!-- Dummy Avatar -->
+                        <img src="https://ui-avatars.com/api/?name=User&background=334155&color=fff" alt="User">
+                    </div>
                 </div>
 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center gap-4">
-                    <button id="mobile-search-btn" class="text-slate-400 hover:text-white">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </button>
-                    <button id="mobile-menu-btn" class="text-slate-400 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                    </button>
+                    <button id="mobile-search-btn" class="text-gray-400"><i class="fas fa-search"></i></button>
+                    <button id="mobile-menu-btn" class="text-gray-400"><i class="fas fa-bars text-lg"></i></button>
                 </div>
             </div>
         </div>
         
-        <!-- Mobile Search Bar (Hidden by default) -->
-        <div id="mobile-search-bar" class="hidden px-4 py-3 bg-slate-800 border-t border-slate-700">
+        <!-- Mobile Search -->
+        <div id="mobile-search-bar" class="hidden px-4 py-3 bg-[#1a1f2e] border-t border-gray-800">
             <form id="mobile-search-form" class="relative w-full">
-                <input type="text" id="mobile-search-input" placeholder="Cari judul anime..." class="w-full bg-slate-900 border border-slate-700 text-sm rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:border-blue-500">
-                <button type="submit" class="absolute right-3 top-2 text-slate-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </button>
+                <input type="text" id="mobile-search-input" placeholder="Cari anime..." class="w-full bg-[#0b0f19] border border-gray-700 text-sm rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-purple-500">
+                <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
             </form>
         </div>
 
-        <!-- Mobile Menu (Hidden by default) -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800">
-            <a href="#home" class="block px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white nav-link" data-target="home">Beranda</a>
-            <a href="#jadwal" class="block px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white nav-link" data-target="jadwal">Jadwal Rilis</a>
-            <a href="#animelist" class="block px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white nav-link" data-target="animelist">Daftar Anime</a>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0b0f19] border-t border-gray-800">
+            <a href="#home" class="block px-4 py-3 text-gray-400 hover:text-white nav-link" data-target="home">Beranda</a>
+            <a href="#animelist" class="block px-4 py-3 text-gray-400 hover:text-white nav-link" data-target="animelist">Anime</a>
+            <a href="#jadwal" class="block px-4 py-3 text-gray-400 hover:text-white nav-link" data-target="jadwal">Jadwal</a>
         </div>
     </nav>
 
-    <!-- Kontainer Aplikasi Utama (SPA) -->
+    <!-- Kontainer Aplikasi Utama -->
     <div id="app-container" class="min-h-screen">
-        <!-- Konten dinamis di-render di sini -->
+        <!-- Konten Dinamis -->
     </div>
 
     <!-- Footer -->
-    <footer class="bg-slate-950 border-t border-slate-900 mt-12 py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600 mb-2">ANIMESHON</h1>
-            <p class="text-sm text-slate-500 mb-4">Tempat streaming anime terbaik, elegan, dan tanpa hambatan.</p>
-            <div class="flex justify-center space-x-4 mb-4">
-                <a href="#home" class="text-slate-600 hover:text-blue-400 text-sm transition-colors">Beranda</a>
-                <a href="#jadwal" class="text-slate-600 hover:text-blue-400 text-sm transition-colors">Jadwal</a>
-                <a href="#animelist" class="text-slate-600 hover:text-blue-400 text-sm transition-colors">A-Z List</a>
+    <footer class="bg-[#0b0f19] border-t border-gray-800 mt-12 py-10">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <i class="fas fa-play text-purple-500 text-xl"></i>
+                    <h1 class="text-xl font-bold tracking-tight text-white">animeshon</h1>
+                </div>
+                <div class="flex space-x-6 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white">Tentang Kami</a>
+                    <a href="#" class="hover:text-white">FAQ</a>
+                    <a href="#" class="hover:text-white">Syarat & Ketentuan</a>
+                    <a href="#" class="hover:text-white">Kebijakan Privasi</a>
+                </div>
+                <div class="flex space-x-4 mt-4 md:mt-0 text-gray-400">
+                    <a href="#" class="hover:text-white"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
-            <p class="text-xs text-slate-700">&copy; 2026 Animeshon Web. Powered by Internal Vercel Cache & API Animasu.</p>
+            <div class="mt-8 text-center md:text-left text-xs text-gray-600 flex justify-between">
+                <span>&copy; 2026 Animeshon. All rights reserved.</span>
+                <span>Anime adalah hidup.</span>
+            </div>
         </div>
     </footer>
 
     <!-- Script SPA -->
     <script>
-        // --- KONFIGURASI API SESUAI DOKUMENTASI ANIMASU ---
         const BASE_PROXY = '/api/proxy?endpoint=';
-        // Base route internal API Animasu (Sesuai dokumentasi)
         const API_HOME = '/animasu/home';
         const API_DETAIL = '/animasu/detail/';
         const API_EPISODE = '/animasu/episode/';
@@ -119,416 +156,375 @@
         const appContainer = document.getElementById('app-container');
         const globalLoader = document.getElementById('global-loader');
 
-        // Fungsi Tampilkan/Sembunyikan Loader Global
         function showLoader() { globalLoader.classList.remove('fade-out'); }
         function hideLoader() { globalLoader.classList.add('fade-out'); }
 
-        // Komponen UI Error
         const errorHTML = (msg) => `
-            <div class="text-center py-32 px-4">
-                <div class="inline-flex justify-center items-center w-16 h-16 rounded-full bg-red-900/30 text-red-500 mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">Oops! Gagal Memuat Data</h3>
-                <p class="text-slate-400 mb-6 max-w-md mx-auto">${msg}</p>
-                <button onclick="router()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg">Coba Muat Ulang</button>
+            <div class="text-center py-32 px-4 max-w-[1400px] mx-auto">
+                <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white mb-2">Gagal Memuat Data</h3>
+                <p class="text-gray-400 mb-6">${msg}</p>
+                <button onclick="router()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">Coba Lagi</button>
             </div>
         `;
 
-        // Utility pencari Array di dalam JSON yang bersarang
+        // Detektif Array Kuat
         function findDataArray(obj) {
+            let foundArray = [];
             if (Array.isArray(obj) && obj.length > 0) return obj;
             if (typeof obj === 'object' && obj !== null) {
+                const commonKeys = ['data', 'result', 'anime', 'popular', 'latest', 'ongoing', 'completed', 'movies', 'list'];
+                for (let key of commonKeys) {
+                     if (obj[key] && Array.isArray(obj[key]) && obj[key].length > 0) {
+                         return obj[key];
+                     }
+                }
                 for (let key in obj) {
-                    if (Array.isArray(obj[key]) && obj[key].length > 0) return obj[key];
-                    if (typeof obj[key] === 'object') {
-                        let found = findDataArray(obj[key]);
-                        if (found && found.length > 0) return found;
+                    if (Array.isArray(obj[key]) && obj[key].length > 0) {
+                        return obj[key];
+                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                        let nestedFound = findDataArray(obj[key]);
+                        if (nestedFound && nestedFound.length > 0) return nestedFound;
                     }
                 }
             }
-            return [];
+            return foundArray;
         }
 
-        // Generator Card Anime HTML
-        function generateAnimeCards(animeList) {
-            if (animeList.length === 0) return `<div class="col-span-full py-10"><p class="text-slate-400 text-center">Tidak ada anime yang ditemukan.</p></div>`;
-            
-            return animeList.map(anime => {
-                const title = anime.title || anime.name || 'Unknown Title';
-                const image = anime.image || anime.thumbnail || anime.poster || anime.cover || 'https://via.placeholder.com/300x450?text=No+Cover';
-                const status = anime.status || anime.type || 'Ongoing';
-                const eps = anime.episode || anime.eps || '';
-                
-                // Pengecekan ID Link Otomatis:
-                let linkId = anime.param || anime.endpoint || anime.slug || anime.id || '';
-                if(!linkId) {
-                    for(let key in anime) {
-                        if(typeof anime[key] === 'string' && anime[key].includes('-')) {
-                            linkId = anime[key]; break;
-                        }
+        function extractId(anime) {
+            let linkId = anime.param || anime.endpoint || anime.slug || anime.id || '';
+            if(!linkId) {
+                for(let key in anime) {
+                    if(typeof anime[key] === 'string' && anime[key].includes('-')) {
+                        linkId = anime[key]; break;
                     }
                 }
+            }
+            return linkId;
+        }
 
-                // Routing berdasar tipe card
+        // Generator Card Style (Seperti Referensi)
+        function generateAnimeCards(animeList) {
+            if (animeList.length === 0) return `<div class="col-span-full py-10 text-center text-gray-500">Tidak ada data.</div>`;
+            
+            return animeList.slice(0, 10).map(anime => {
+                const title = anime.title || anime.name || 'Unknown Title';
+                const image = anime.image || anime.thumbnail || anime.poster || 'https://via.placeholder.com/300x450';
+                const status = anime.status || anime.type || 'Ongoing';
+                const eps = anime.episode || anime.eps || '';
+                const linkId = extractId(anime);
                 const isEpisode = linkId.includes('-episode-') || linkId.includes('-eps-');
                 const targetHash = isEpisode ? `#episode/${linkId}` : `#detail/${linkId}`;
 
                 return `
-                    <a href="${targetHash}" class="block bg-slate-800/50 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 transition-all duration-300 card-hover group">
-                        <div class="relative aspect-[3/4] overflow-hidden bg-slate-800">
-                            <img src="${image}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>
-                            <div class="absolute bottom-0 p-3 w-full flex justify-between items-end">
-                                <span class="px-2 py-1 bg-blue-600/90 text-white text-[10px] font-bold rounded shadow-sm">${status}</span>
-                                ${eps ? `<span class="px-2 py-1 bg-black/70 text-slate-200 text-[10px] font-bold rounded backdrop-blur-sm shadow-sm">${eps}</span>` : ''}
-                            </div>
-                            <div class="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <div class="bg-white/20 backdrop-blur-md rounded-full p-3 shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300"><svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                    <a href="${targetHash}" class="block group">
+                        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[#1a1f2e] mb-2 border border-gray-800">
+                            <img src="${image}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            ${eps ? `<div class="absolute top-2 left-2 bg-gray-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm border border-gray-700">EP ${eps.replace(/[^0-9]/g, '') || eps}</div>` : ''}
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <i class="fas fa-play-circle text-4xl text-white opacity-80"></i>
                             </div>
                         </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-sm leading-snug line-clamp-2 text-slate-200 group-hover:text-blue-400 transition-colors" title="${title}">${title}</h4>
+                        <h4 class="font-semibold text-sm leading-tight line-clamp-2 text-gray-200 group-hover:text-purple-400 transition-colors">${title}</h4>
+                        <p class="text-xs text-gray-500 mt-1 line-clamp-1">Action, Adventure</p>
+                    </a>
+                `;
+            }).join('');
+        }
+        
+        // Trending Sidebar List (Seperti Referensi)
+        function generateTrendingList(animeList) {
+            return animeList.slice(0, 5).map((anime, index) => {
+                const title = anime.title || anime.name || 'Unknown';
+                const image = anime.image || anime.thumbnail || '';
+                const linkId = extractId(anime);
+                return `
+                    <a href="#detail/${linkId}" class="flex items-center space-x-3 p-2 hover:bg-[#1a1f2e] rounded-lg transition-colors group">
+                        <span class="text-gray-500 font-bold text-sm w-4">${index + 1}</span>
+                        <img src="${image}" class="w-10 h-10 rounded object-cover" alt="thumb">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-gray-200 truncate group-hover:text-purple-400">${title}</h4>
+                            <p class="text-xs text-gray-500 truncate">Action, Fantasy</p>
                         </div>
+                        <i class="fas fa-chevron-right text-xs text-gray-600"></i>
                     </a>
                 `;
             }).join('');
         }
 
-        // --- SISTEM ROUTER SPA ---
         async function router() {
             const hash = window.location.hash || '#home';
             showLoader();
             window.scrollTo(0, 0);
 
-            // Update UI Menu Aktif
-            document.querySelectorAll('.nav-link').forEach(link => {
-                if(hash.includes(link.dataset.target)) {
-                    link.classList.add('text-blue-400', 'font-semibold');
-                    link.classList.remove('text-slate-400');
-                } else {
-                    link.classList.remove('text-blue-400', 'font-semibold');
-                    link.classList.add('text-slate-400');
-                }
-            });
-
-            // Tutup menu mobile jika terbuka
             document.getElementById('mobile-menu').classList.add('hidden');
             document.getElementById('mobile-search-bar').classList.add('hidden');
 
             try {
-                if (hash === '#home') {
-                    await renderHome();
-                } else if (hash.startsWith('#detail/')) {
-                    const slug = hash.replace('#detail/', '');
-                    await renderDetail(slug);
-                } else if (hash.startsWith('#episode/')) {
-                    const slug = hash.replace('#episode/', '');
-                    await renderWatch(slug);
-                } else if (hash === '#jadwal') {
-                    await renderSchedule();
-                } else if (hash === '#animelist') {
-                    await renderAnimeList();
-                } else if (hash.startsWith('#search/')) {
-                    const keyword = hash.replace('#search/', '');
-                    await renderSearch(keyword);
-                } else {
-                    await renderHome();
-                }
+                if (hash === '#home') await renderHome();
+                else if (hash.startsWith('#detail/')) await renderDetail(hash.replace('#detail/', ''));
+                else if (hash.startsWith('#episode/')) await renderWatch(hash.replace('#episode/', ''));
+                else if (hash === '#jadwal') await renderSchedule();
+                else if (hash === '#animelist') await renderAnimeList();
+                else if (hash.startsWith('#search/')) await renderSearch(hash.replace('#search/', ''));
+                else await renderHome();
             } catch (error) {
-                console.error("Router Fetch Error:", error);
-                appContainer.innerHTML = errorHTML("Server proxy sedang sibuk atau endpoint API Sankavollerei berubah. Coba lagi dalam beberapa saat.");
+                console.error("Fetch Error:", error);
+                appContainer.innerHTML = errorHTML("Tidak dapat menghubungi server API Animasu. Pastikan endpoint aktif.");
             } finally {
                 hideLoader();
             }
         }
 
-        // --- RENDER HALAMAN: BERANDA ---
+        // RENDER BERANDA (Desain mirip screenshot referensi)
         async function renderHome() {
+            // Ambil data (Untuk demo, kita pakai endpoint home, idealnya endpoint popular/latest dipisah)
             const res = await fetch(BASE_PROXY + API_HOME);
             const data = await res.json();
-            
-            // Ekstrak array dari JSON
             const animeList = findDataArray(data);
+            
+            // Simulasi pembagian data untuk UI
+            const heroAnime = animeList[0] || {};
+            const latestAnime = animeList.slice(0, 10);
+            const popularAnime = animeList.slice(10, 20).length > 0 ? animeList.slice(10, 20) : animeList.slice(0, 10);
+            
+            const heroTitle = heroAnime.title || 'Jujutsu Kaisen';
+            const heroImage = heroAnime.image || 'https://via.placeholder.com/1200x600?text=Hero+Image';
+            const heroId = extractId(heroAnime);
 
             appContainer.innerHTML = `
-                <header class="relative overflow-hidden bg-slate-900 py-16 sm:py-24 mb-10 border-b border-slate-800">
-                    <div class="absolute inset-0 bg-blue-900/20 rounded-full blur-[100px] transform -translate-y-1/2 scale-150"></div>
-                    <div class="relative max-w-7xl mx-auto px-4 text-center">
-                        <h2 class="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl text-white drop-shadow-2xl">
-                            Streaming Anime <span class="text-blue-500">Kapan Saja</span>
-                        </h2>
-                        <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
-                            Nikmati update episode terbaru setiap hari dengan server super cepat dan kualitas HD.
-                        </p>
+                <!-- Hero Section -->
+                <div class="relative w-full h-[60vh] md:h-[70vh] min-h-[400px] overflow-hidden">
+                    <img src="${heroImage}" class="absolute inset-0 w-full h-full object-cover object-top opacity-50" alt="Hero">
+                    <div class="absolute inset-0 hero-gradient"></div>
+                    
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20">
+                            <span class="text-purple-400 font-bold text-xs tracking-widest uppercase mb-2 block">Anime Populer</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 max-w-2xl leading-tight">${heroTitle}</h1>
+                            <p class="text-gray-300 text-sm md:text-base max-w-xl mb-6 line-clamp-3">
+                                Yuji Itadori, seorang siswa SMA yang memiliki kekuatan supernatural, bergabung dengan organisasi rahasia untuk menghadapi kutukan berbahaya yang mengancam dunia.
+                            </p>
+                            
+                            <div class="flex items-center space-x-4 mb-8 text-xs text-gray-400 font-medium">
+                                <span>Action</span>
+                                <span>Supernatural</span>
+                                <span>Shounen</span>
+                                <span class="flex items-center text-yellow-400"><i class="fas fa-star mr-1"></i> 8.7 <span class="text-gray-500 ml-1">(1.2M)</span></span>
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <a href="#detail/${heroId}" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded flex items-center transition-colors shadow-lg shadow-purple-500/30">
+                                    <i class="fas fa-play mr-2"></i> Tonton Sekarang
+                                </a>
+                                <button class="px-6 py-2.5 bg-transparent border border-gray-500 hover:border-white text-white font-semibold rounded flex items-center transition-colors">
+                                    <i class="fas fa-plus mr-2"></i> Daftar Saya
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </header>
-                
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-end mb-6 border-b border-slate-800 pb-2">
-                        <h3 class="text-2xl font-bold border-l-4 border-blue-500 pl-3">Update Terbaru</h3>
+                </div>
+
+                <!-- Kategori Cepat -->
+                <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 hidden md:block">
+                    <div class="flex items-center justify-between bg-[#1a1f2e] p-4 rounded-xl border border-gray-800 shadow-xl overflow-x-auto">
+                        ${['Semua', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Harem', 'Mystery', 'Romance', 'Sci-Fi', 'Sports', 'Supernatural'].map((genre, i) => `
+                            <div class="flex flex-col items-center min-w-[80px] cursor-pointer group">
+                                <div class="w-10 h-10 rounded-lg ${i===0 ? 'bg-purple-600/20 text-purple-500' : 'bg-gray-800 text-gray-400 group-hover:bg-gray-700'} flex items-center justify-center mb-2 transition-colors">
+                                    <i class="fas fa-${['th-large', 'fire', 'compass', 'laugh', 'theater-masks', 'dragon', 'heart', 'search', 'kiss-wink-heart', 'robot', 'basketball-ball', 'ghost'][i]}"></i>
+                                </div>
+                                <span class="text-[10px] text-gray-400 font-medium">${genre}</span>
+                            </div>
+                        `).join('')}
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-                        ${generateAnimeCards(animeList)}
+                </div>
+
+                <!-- Main Content Layout -->
+                <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col lg:flex-row gap-8">
+                    
+                    <!-- Kiri: Grid Content -->
+                    <div class="flex-1 w-full">
+                        <!-- Anime Terbaru -->
+                        <div class="mb-10">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-white">Anime Terbaru</h2>
+                                <a href="#animelist" class="text-sm text-gray-400 hover:text-white flex items-center">Lihat Semua <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                ${generateAnimeCards(latestAnime)}
+                            </div>
+                        </div>
+
+                        <!-- Anime Populer -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-white">Anime Populer</h2>
+                                <a href="#animelist" class="text-sm text-gray-400 hover:text-white flex items-center">Lihat Semua <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                ${generateAnimeCards(popularAnime)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kanan: Sidebar -->
+                    <div class="w-full lg:w-80 flex-shrink-0 space-y-8">
+                        
+                        <!-- Trending -->
+                        <div class="bg-[#0b0f19] rounded-xl">
+                            <h3 class="text-sm font-bold text-white mb-4 flex items-center"><i class="fas fa-fire text-purple-500 mr-2"></i> Trending Saat Ini</h3>
+                            <div class="space-y-1">
+                                ${generateTrendingList(animeList)}
+                            </div>
+                        </div>
+
+                        <!-- Continue Watching Box -->
+                        <div class="bg-[#0b0f19] rounded-xl pt-4 border-t border-gray-800">
+                            <h3 class="text-sm font-bold text-white mb-4 flex items-center"><i class="fas fa-play-circle text-gray-400 mr-2"></i> Lanjut Nonton</h3>
+                            <div class="flex items-center space-x-3 p-3 bg-[#1a1f2e] rounded-lg border border-gray-800 hover:border-gray-600 cursor-pointer transition-colors">
+                                <img src="${heroImage}" class="w-12 h-12 rounded object-cover" alt="thumb">
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-semibold text-gray-200 truncate">${heroTitle}</h4>
+                                    <p class="text-xs text-gray-500">Episode 7 • 18:24</p>
+                                    <div class="w-full bg-gray-700 h-1 mt-2 rounded-full overflow-hidden">
+                                        <div class="bg-purple-500 h-full w-2/3"></div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-xs text-gray-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- Premium Banner -->
+                        <div class="bg-gradient-to-br from-[#1a1f2e] to-[#2d1b4e] rounded-xl p-5 border border-purple-900/50 shadow-lg">
+                            <i class="fas fa-crown text-purple-400 mb-2 text-xl"></i>
+                            <h4 class="text-white font-bold text-sm mb-1">Nikmati Pengalaman Menonton Tanpa Batas</h4>
+                            <p class="text-xs text-gray-400 mb-4">Dapatkan akses premium untuk kualitas HD, tanpa iklan, dan lebih banyak fitur menarik lainnya.</p>
+                            <button class="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded transition-colors flex items-center justify-center">
+                                Upgrade ke Premium <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             `;
         }
 
-        // --- RENDER HALAMAN: DETAIL ANIME ---
+        // RENDER DETAIL ANIME
         async function renderDetail(slug) {
             const res = await fetch(BASE_PROXY + API_DETAIL + slug);
             const data = await res.json();
-            
-            // Deteksi struktur (mengakomodasi data.data atau data.result)
             const info = data.data || data.result || data || {};
             
             const title = info.title || 'Detail Anime';
-            const image = info.image || info.thumbnail || info.poster || 'https://via.placeholder.com/300x450';
-            const synopsis = info.synopsis || info.sinopsis || 'Sinopsis belum tersedia untuk anime ini.';
-            const score = info.score || info.rating || '?';
-            const status = info.status || 'Ongoing';
-            
-            // Mencari array episode list secara otomatis
-            let episodes = [];
-            if (info.episode_list && Array.isArray(info.episode_list)) episodes = info.episode_list;
-            else if (info.episodes && Array.isArray(info.episodes)) episodes = info.episodes;
-            else episodes = findDataArray(info);
+            const image = info.image || info.thumbnail || 'https://via.placeholder.com/300x450';
+            const synopsis = info.synopsis || info.sinopsis || '-';
+            let episodes = info.episode_list || info.episodes || findDataArray(info);
 
             let html = `
-                <div class="max-w-6xl mx-auto px-4 py-8 md:py-12">
-                    <button onclick="window.history.back()" class="inline-flex items-center text-slate-400 hover:text-white mb-6 bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Kembali
-                    </button>
-
-                    <div class="flex flex-col md:flex-row gap-8 bg-slate-800/40 p-6 md:p-8 rounded-2xl border border-slate-700/50 shadow-2xl relative overflow-hidden">
-                        <!-- Blur Background -->
-                        <div class="absolute inset-0 bg-blue-900/10 blur-3xl rounded-full scale-150 -translate-x-1/2 -z-10"></div>
-                        
-                        <div class="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 z-10">
-                            <img src="${image}" class="w-full rounded-xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.2)] object-cover aspect-[3/4]" alt="${title}">
-                            
-                            <div class="mt-4 grid grid-cols-2 gap-2">
-                                <div class="bg-slate-900/80 p-3 rounded-lg text-center border border-slate-700/50 backdrop-blur-sm">
-                                    <p class="text-xs text-slate-400 mb-1">Skor</p>
-                                    <p class="font-bold text-yellow-400 flex items-center justify-center"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>${score}</p>
-                                </div>
-                                <div class="bg-slate-900/80 p-3 rounded-lg text-center border border-slate-700/50 backdrop-blur-sm">
-                                    <p class="text-xs text-slate-400 mb-1">Status</p>
-                                    <p class="font-bold text-blue-400">${status}</p>
-                                </div>
-                            </div>
+                <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-6 text-sm flex items-center"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                    
+                    <div class="flex flex-col md:flex-row gap-8 bg-[#1a1f2e] p-6 rounded-xl border border-gray-800">
+                        <div class="w-full md:w-64 flex-shrink-0">
+                            <img src="${image}" class="w-full rounded-lg shadow-lg border border-gray-700" alt="${title}">
                         </div>
-
-                        <div class="flex-1 z-10">
-                            <h1 class="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">${title}</h1>
-                            
-                            <div class="mb-8">
-                                <h3 class="text-lg font-bold text-slate-200 mb-2 flex items-center"><svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Sinopsis</h3>
-                                <p class="text-slate-400 text-sm leading-relaxed">${synopsis}</p>
+                        <div class="flex-1">
+                            <h1 class="text-3xl font-bold text-white mb-2">${title}</h1>
+                            <div class="flex items-center space-x-3 text-xs text-gray-400 mb-6">
+                                <span class="bg-gray-800 px-2 py-1 rounded">${info.status || 'Ongoing'}</span>
+                                <span class="flex items-center text-yellow-400"><i class="fas fa-star mr-1"></i> ${info.score || '-'}</span>
                             </div>
                             
-                            <h3 class="text-xl font-bold mb-4 flex items-center border-b border-slate-700/50 pb-3"><svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg> Daftar Episode</h3>
+                            <h3 class="text-sm font-bold text-white mb-2">Sinopsis</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed mb-8">${synopsis}</p>
                             
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                            <h3 class="text-sm font-bold text-white mb-4 border-b border-gray-800 pb-2">Daftar Episode</h3>
+                            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
             `;
 
             if(episodes.length > 0) {
-                // Reverse agar episode terbaru ada di atas (opsional)
                 episodes.forEach(eps => {
-                    let epsEndpoint = eps.endpoint || eps.slug || eps.param || eps.id || '';
-                    if(!epsEndpoint) {
-                        epsEndpoint = slug + '-episode-' + (eps.episode || eps.eps || '');
-                    }
-                    let epsTitle = eps.title || eps.episode || eps.eps || 'Eps ?';
-                    if (!epsTitle.toString().toLowerCase().includes('eps')) {
-                        epsTitle = 'Eps ' + epsTitle;
-                    }
+                    let epsEndpoint = extractId(eps) || (slug + '-episode-' + (eps.episode || eps.eps));
+                    let epsTitle = eps.title || eps.episode || eps.eps || '?';
+                    if (!epsTitle.toString().toLowerCase().includes('eps')) epsTitle = 'EP ' + epsTitle;
                     
-                    html += `
-                        <a href="#episode/${epsEndpoint}" class="flex justify-center items-center py-2.5 px-2 bg-slate-900/80 hover:bg-blue-600 text-slate-300 hover:text-white rounded-lg text-sm font-semibold transition-all border border-slate-700/50 shadow-sm">
-                            <svg class="w-4 h-4 mr-1.5 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
-                            ${epsTitle}
-                        </a>
-                    `;
+                    html += `<a href="#episode/${epsEndpoint}" class="py-2 px-1 text-center bg-gray-800 hover:bg-purple-600 text-gray-300 hover:text-white rounded text-xs font-semibold transition-colors border border-gray-700">${epsTitle}</a>`;
                 });
             } else {
-                html += `<div class="col-span-full py-8 text-center bg-slate-900/50 rounded-lg"><p class="text-slate-500">Episode belum tersedia untuk anime ini.</p></div>`;
+                html += `<p class="text-gray-500 text-sm col-span-full">Episode belum tersedia.</p>`;
             }
 
             html += `</div></div></div></div>`;
             appContainer.innerHTML = html;
         }
 
-        // --- RENDER HALAMAN: NONTON EPISODE (STREAMING) ---
+        // RENDER STREAMING PLAYER
         async function renderWatch(slug) {
             const res = await fetch(BASE_PROXY + API_EPISODE + slug);
             const data = await res.json();
-            
             const info = data.data || data.result || data || {};
-            const title = info.title || 'Nonton Streaming';
             
-            // Pencarian cerdas untuk URL Video/Iframe
             let streamUrl = info.stream_url || info.video || info.iframe || info.link || '';
             if(!streamUrl && info.server && Array.isArray(info.server) && info.server.length > 0) {
                 streamUrl = info.server[0].url || info.server[0].iframe || info.server[0].link || '';
             }
 
-            // Tombol Navigasi Next/Prev (jika didukung API)
-            const prevEps = info.prev || info.prev_episode || '';
-            const nextEps = info.next || info.next_episode || '';
-            const allEps = info.all || info.anime_detail || ''; // Link kembali ke halaman info anime
-
-            let html = `
-                <div class="max-w-5xl mx-auto px-4 py-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <button onclick="window.history.back()" class="inline-flex items-center text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Kembali
-                        </button>
-                        ${allEps ? `<a href="#detail/${allEps}" class="text-blue-400 hover:text-blue-300 text-sm font-semibold">Semua Episode</a>` : ''}
+            appContainer.innerHTML = `
+                <div class="max-w-[1000px] mx-auto px-4 py-8">
+                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-4 text-sm flex items-center"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                    <h2 class="text-xl font-bold text-white mb-4">${info.title || 'Streaming Anime'}</h2>
+                    
+                    <div class="aspect-video bg-black rounded-lg overflow-hidden border border-gray-800 flex items-center justify-center">
+                        ${streamUrl ? `<iframe src="${streamUrl}" class="w-full h-full" allowfullscreen="true" frameborder="0"></iframe>` : `<div class="text-gray-500"><i class="fas fa-video-slash text-3xl mb-2 block text-center"></i>Video tidak tersedia</div>`}
                     </div>
                     
-                    <h2 class="text-2xl md:text-3xl font-black text-white mb-6 border-l-4 border-blue-500 pl-4">${title}</h2>
-                    
-                    <div class="aspect-video bg-black rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,_0,_0,_0.5)] border border-slate-700 relative flex items-center justify-center">
-            `;
-
-            if(streamUrl) {
-                html += `<iframe src="${streamUrl}" class="w-full h-full absolute inset-0" allowfullscreen="true" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>`;
-            } else {
-                html += `<div class="text-center p-8"><svg class="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><p class="text-slate-400 text-lg">Server video tidak merespon atau format API tidak sesuai.</p></div>`;
-            }
-
-            html += `
-                    </div>
-                    
-                    <!-- Navigasi Next/Prev Episode -->
-                    <div class="flex justify-between items-center mt-6 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        ${prevEps ? `<a href="#episode/${prevEps}" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg> Eps Sebelumnya</a>` : `<div class="w-24"></div>`}
-                        
-                        <a href="${allEps ? `#detail/${allEps}` : 'javascript:window.history.back()'}" class="px-4 py-2 bg-slate-900 text-slate-300 hover:text-white text-sm font-medium rounded-lg transition-colors border border-slate-700">Daftar Eps</a>
-                        
-                        ${nextEps ? `<a href="#episode/${nextEps}" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center">Eps Selanjutnya <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></a>` : `<div class="w-24"></div>`}
-                    </div>
-
-                    <!-- Peringatan Server -->
-                    <div class="mt-6 bg-blue-900/20 border border-blue-500/30 p-4 rounded-lg flex items-start">
-                        <svg class="w-5 h-5 text-blue-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-sm text-blue-200">Jika video tidak dapat diputar, diputar berulang-ulang, atau error, cobalah memuat ulang (refresh) halaman. Jika masalah berlanjut, berarti server pusat (Animasu) sedang down.</p>
+                    <div class="mt-4 flex justify-between">
+                        ${info.prev ? `<a href="#episode/${info.prev}" class="px-4 py-2 bg-[#1a1f2e] hover:bg-gray-800 text-sm rounded text-white border border-gray-800 transition-colors">Prev</a>` : `<div></div>`}
+                        ${info.all ? `<a href="#detail/${info.all}" class="px-4 py-2 bg-[#1a1f2e] hover:bg-gray-800 text-sm rounded text-white border border-gray-800 transition-colors"><i class="fas fa-list"></i></a>` : `<div></div>`}
+                        ${info.next ? `<a href="#episode/${info.next}" class="px-4 py-2 bg-[#1a1f2e] hover:bg-gray-800 text-sm rounded text-white border border-gray-800 transition-colors">Next</a>` : `<div></div>`}
                     </div>
                 </div>
             `;
-            appContainer.innerHTML = html;
         }
 
-        // --- RENDER HALAMAN: JADWAL RILIS ---
-        async function renderSchedule() {
-            const res = await fetch(BASE_PROXY + API_SCHEDULE);
-            const data = await res.json();
-            
-            const scheduleData = data.data || data.result || data || {};
-            
-            let html = `
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    <h2 class="text-3xl font-black text-white mb-8 border-l-4 border-blue-500 pl-4">Jadwal Rilis Mingguan</h2>
-                    <div class="space-y-8">
-            `;
-            
-            // Loop melalui hari (Senin, Selasa, dsb.)
-            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-            // Jika format API berupa Object Key (Senin: [], Selasa: [])
-            if (typeof scheduleData === 'object' && !Array.isArray(scheduleData)) {
-                for (let day in scheduleData) {
-                    const animeList = scheduleData[day];
-                    if(Array.isArray(animeList) && animeList.length > 0) {
-                        html += `
-                            <div class="bg-slate-800/30 rounded-2xl p-6 border border-slate-700/50">
-                                <h3 class="text-xl font-bold text-blue-400 mb-4 uppercase tracking-widest">${day}</h3>
-                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                                    ${generateAnimeCards(animeList)}
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-            } else {
-                html += `<p class="text-slate-400">Data jadwal gagal dibaca atau format API tidak sesuai.</p>`;
-            }
-
-            html += `</div></div>`;
-            appContainer.innerHTML = html;
-        }
-
-        // --- RENDER HALAMAN: DAFTAR ANIME (A-Z) ---
-        async function renderAnimeList() {
-            const res = await fetch(BASE_PROXY + API_ANIMELIST);
+        // RENDER PENCARIAN & DAFTAR (Reusable Grid)
+        async function renderList(endpoint, titleText) {
+            const res = await fetch(BASE_PROXY + endpoint);
             const data = await res.json();
             const animeList = findDataArray(data);
 
-            let html = `
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    <h2 class="text-3xl font-black text-white mb-8 border-l-4 border-blue-500 pl-4">Daftar Semua Anime</h2>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            appContainer.innerHTML = `
+                <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <h2 class="text-2xl font-bold text-white mb-6">${titleText}</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         ${generateAnimeCards(animeList)}
                     </div>
                 </div>
             `;
-            appContainer.innerHTML = html;
         }
-
-        // --- RENDER HALAMAN: PENCARIAN ---
-        async function renderSearch(keyword) {
-            // Encode keyword agar aman untuk URL (misal Spasi jadi %20)
-            const safeKeyword = encodeURIComponent(keyword);
-            const res = await fetch(BASE_PROXY + API_SEARCH + safeKeyword);
-            const data = await res.json();
-            const animeList = findDataArray(data);
-
-            let html = `
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    <h2 class="text-2xl md:text-3xl font-black text-white mb-2">Hasil Pencarian</h2>
-                    <p class="text-slate-400 mb-8 border-b border-slate-700/50 pb-4">Menampilkan hasil untuk kata kunci: <span class="font-bold text-blue-400">"${decodeURIComponent(keyword)}"</span></p>
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-                        ${generateAnimeCards(animeList)}
-                    </div>
-                </div>
-            `;
-            appContainer.innerHTML = html;
-        }
-
-        // --- EVENT LISTENERS UI & PENCARIAN ---
         
-        // Handle Submit Search Desktop
+        async function renderAnimeList() { await renderList(API_ANIMELIST, "Daftar Semua Anime"); }
+        async function renderSchedule() { await renderList(API_SCHEDULE, "Jadwal Rilis Mingguan"); } // Fallback jika struktur jadwal sama
+        async function renderSearch(keyword) { await renderList(API_SEARCH + encodeURIComponent(keyword), `Hasil Pencarian: "${decodeURIComponent(keyword)}"`); }
+
+        // Event Listeners
         document.getElementById('search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const val = document.getElementById('search-input').value.trim();
             if(val) window.location.hash = `#search/${val}`;
         });
-
-        // Handle Submit Search Mobile
         document.getElementById('mobile-search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const val = document.getElementById('mobile-search-input').value.trim();
             if(val) window.location.hash = `#search/${val}`;
         });
-
-        // Toggle Mobile Menu
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.toggle('hidden');
-            document.getElementById('mobile-search-bar').classList.add('hidden'); // Tutup search
         });
-
-        // Toggle Mobile Search
         document.getElementById('mobile-search-btn').addEventListener('click', () => {
             document.getElementById('mobile-search-bar').classList.toggle('hidden');
-            document.getElementById('mobile-menu').classList.add('hidden'); // Tutup menu
-            if(!document.getElementById('mobile-search-bar').classList.contains('hidden')) {
-                document.getElementById('mobile-search-input').focus();
-            }
         });
 
-        // Jalankan router saat URL hash berubah atau pertama kali dimuat
         window.addEventListener('hashchange', router);
         window.addEventListener('DOMContentLoaded', router);
     </script>
