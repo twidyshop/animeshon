@@ -3,176 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animeshon - Streaming Anime Elegan</title>
+    <title>Animeshon - Streaming Anime</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #0f172a; /* slate-900 */
-            color: #e2e8f0;
-        }
+        body { background-color: #0f172a; color: #e2e8f0; }
         .card-hover:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.4);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .loader-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="font-sans antialiased selection:bg-blue-500 selection:text-white">
-    
-    <!-- Navbar -->
+<body class="font-sans antialiased selection:bg-blue-500 selection:text-white pb-20">
+
+    <!-- Navbar Aktif -->
     <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">ANIMESHON</h1>
-                </div>
+                <a href="#home" class="flex items-center">
+                    <h1 class="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600 hover:scale-105 transition-transform">ANIMESHON</h1>
+                </a>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-6">
-                        <a href="#" class="text-blue-400 hover:text-blue-300 font-semibold text-sm transition-colors">Beranda</a>
-                        <a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Jadwal Rilis</a>
-                        <a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Daftar Anime</a>
+                        <a href="#home" class="text-blue-400 hover:text-blue-300 font-semibold text-sm transition-colors nav-link" data-target="home">Beranda</a>
+                        <a href="#jadwal" class="text-slate-400 hover:text-white font-medium text-sm transition-colors nav-link" data-target="jadwal">Jadwal Rilis</a>
+                        <a href="#home" class="text-slate-400 hover:text-white font-medium text-sm transition-colors nav-link">Daftar Anime</a>
                     </div>
-                </div>
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-slate-400 hover:text-white focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="relative overflow-hidden bg-slate-900 py-16 sm:py-24">
-        <div class="absolute inset-0 bg-blue-900/10 rounded-full blur-3xl transform -translate-y-1/2 scale-150"></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl text-white drop-shadow-lg">
-                Portal Anime <span class="text-blue-500">Premium</span>
-            </h2>
-            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
-                Streaming dan nikmati update anime terbaru dengan antarmuka elegan, ringan, dan responsif.
-            </p>
-        </div>
-    </header>
-
-    <!-- Konten Utama -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">
-        <div class="flex justify-between items-end mb-8 border-b border-slate-800 pb-4">
-            <h3 class="text-2xl font-bold border-l-4 border-blue-500 pl-3">Update Terbaru</h3>
-        </div>
-
-        <!-- Loader -->
-        <div id="loader" class="flex flex-col justify-center items-center py-32">
-            <div class="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-            <p class="text-slate-500 animate-pulse">Menghubungkan ke server...</p>
-        </div>
-
-        <!-- Anime Grid -->
-        <div id="anime-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 hidden">
-            <!-- Card Injeksi JS -->
-        </div>
-    </main>
+    <!-- Kontainer Aplikasi Utama (SPA) -->
+    <div id="app-container" class="min-h-screen">
+        <!-- Konten akan di-render di sini oleh JavaScript -->
+    </div>
 
     <!-- Footer -->
     <footer class="bg-slate-950 border-t border-slate-900 mt-12 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-xl font-bold text-slate-700 mb-2">ANIMESHON</h1>
-            <p class="text-sm text-slate-500">&copy; 2026 Animeshon Web. Powered by Vercel Edge Cache.</p>
+            <p class="text-sm text-slate-500">&copy; 2026 Animeshon Web. Fully Functional SPA.</p>
         </div>
     </footer>
 
-    <!-- Script Utama -->
+    <!-- Script SPA (Single Page Application) -->
     <script>
-        async function fetchAnime() {
-            try {
-                // Memanggil fungsi serverless Vercel proxy kita
-                const response = await fetch('/api/proxy');
-                const data = await response.json();
+        const API_PROXY = '/api/proxy?endpoint=';
+        const appContainer = document.getElementById('app-container');
 
-                // Memunculkan data asli di Console browser untuk pengecekan
-                console.log("Data Response Asli:", data);
+        // Komponen Loader
+        const loaderHTML = `
+            <div class="flex flex-col justify-center items-center py-32">
+                <div class="loader-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                <p class="text-slate-500 animate-pulse">Memuat data dari server...</p>
+            </div>
+        `;
 
-                document.getElementById('loader').classList.add('hidden');
-                const grid = document.getElementById('anime-grid');
-                grid.classList.remove('hidden');
+        // Komponen Error
+        const errorHTML = (msg) => `
+            <div class="text-center py-20">
+                <p class="text-red-400 font-medium mb-4">${msg}</p>
+                <button onclick="router()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg">Coba Lagi</button>
+            </div>
+        `;
 
-                // Fungsi pelacak otomatis: Mencari array anime tersembunyi di dalam struktur JSON
-                function findAnimeArray(obj) {
-                    if (Array.isArray(obj) && obj.length > 0) return obj;
-                    if (typeof obj === 'object' && obj !== null) {
-                        for (let key in obj) {
-                            if (Array.isArray(obj[key]) && obj[key].length > 0) return obj[key];
-                            if (typeof obj[key] === 'object') {
-                                let found = findAnimeArray(obj[key]);
-                                if (found && found.length > 0) return found;
-                            }
-                        }
+        // Utility: Pelacak Array otomatis dalam JSON
+        function findDataArray(obj) {
+            if (Array.isArray(obj) && obj.length > 0) return obj;
+            if (typeof obj === 'object' && obj !== null) {
+                for (let key in obj) {
+                    if (Array.isArray(obj[key]) && obj[key].length > 0) return obj[key];
+                    if (typeof obj[key] === 'object') {
+                        let found = findDataArray(obj[key]);
+                        if (found && found.length > 0) return found;
                     }
-                    return [];
                 }
+            }
+            return [];
+        }
 
-                const animeList = findAnimeArray(data);
+        // Router Utama (Menangani Navigasi Tanpa Reload)
+        async function router() {
+            const hash = window.location.hash || '#home';
+            appContainer.innerHTML = loaderHTML;
+            window.scrollTo(0, 0);
 
-                if (animeList.length > 0) {
-                    grid.innerHTML = animeList.map(anime => {
-                        // Deteksi nama variabel untuk gambar dan judul sesuai format API
-                        const title = anime.title || anime.name || 'Unknown Title';
-                        const image = anime.image || anime.thumbnail || anime.poster || anime.cover || 'https://via.placeholder.com/300x450?text=No+Cover';
-                        const status = anime.status || anime.type || 'Ongoing';
-                        const eps = anime.episode || anime.eps || '';
-                        const linkId = anime.id || anime.endpoint || '#';
-
-                        return `
-                            <a href="#detail-${linkId}" class="block bg-slate-800/50 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 transition-all duration-300 card-hover group">
-                                <div class="relative aspect-[3/4] overflow-hidden bg-slate-800">
-                                    <img src="${image}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-90"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-600/90 text-white backdrop-blur-sm">
-                                                ${status}
-                                            </span>
-                                            ${eps ? `<span class="text-xs font-medium text-slate-300 bg-black/50 px-2 py-1 rounded backdrop-blur-sm">${eps}</span>` : ''}
-                                        </div>
-                                    </div>
-                                    <div class="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                        <div class="bg-white/20 backdrop-blur-md rounded-full p-3 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                                            <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-sm leading-tight line-clamp-2 text-slate-200 group-hover:text-blue-400 transition-colors">${title}</h4>
-                                </div>
-                            </a>
-                        `;
-                    }).join('');
+            // Update UI Navbar
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if(hash.includes(link.dataset.target)) {
+                    link.classList.add('text-blue-400', 'font-semibold');
+                    link.classList.remove('text-slate-400');
                 } else {
-                    grid.innerHTML = `
-                        <div class="col-span-full py-10 text-center">
-                            <p class="text-slate-400">Data array tidak ditemukan dalam JSON. Buka Console browser (F12) untuk mengecek struktur aslinya.</p>
-                        </div>
-                    `;
+                    link.classList.remove('text-blue-400', 'font-semibold');
+                    link.classList.add('text-slate-400');
+                }
+            });
+
+            try {
+                if (hash === '#home') {
+                    await renderHome();
+                } else if (hash.startsWith('#anime/')) {
+                    const endpoint = hash.replace('#anime/', '');
+                    await renderDetail(endpoint, 'anime');
+                } else if (hash.startsWith('#episode/')) {
+                    const endpoint = hash.replace('#episode/', '');
+                    await renderWatch(endpoint);
+                } else if (hash === '#jadwal') {
+                    appContainer.innerHTML = `<div class="py-20 text-center"><h2 class="text-2xl font-bold">Jadwal Rilis</h2><p class="text-slate-400 mt-4">Fitur sedang dikembangkan.</p></div>`;
+                } else {
+                    await renderHome();
                 }
             } catch (error) {
-                console.error('Fetch Error:', error);
-                document.getElementById('loader').innerHTML = `
-                    <div class="text-center">
-                        <p class="text-red-400 font-medium mb-2">Gagal mengambil data dari server.</p>
-                        <button onclick="location.reload()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm rounded-md transition-colors">Coba Lagi</button>
-                    </div>
-                `;
+                console.error("Router Error:", error);
+                appContainer.innerHTML = errorHTML("Terjadi kesalahan saat memuat halaman.");
             }
         }
 
-        document.addEventListener('DOMContentLoaded', fetchAnime);
+        // Halaman 1: Beranda (Grid Anime)
+        async function renderHome() {
+            const res = await fetch(API_PROXY + '/home');
+            const data = await res.json();
+            const animeList = findDataArray(data);
+
+            let html = `
+                <header class="relative overflow-hidden bg-slate-900 py-16 sm:py-20 mb-10">
+                    <div class="absolute inset-0 bg-blue-900/10 rounded-full blur-3xl transform -translate-y-1/2 scale-150"></div>
+                    <div class="relative max-w-7xl mx-auto px-4 text-center">
+                        <h2 class="text-4xl font-extrabold text-white drop-shadow-lg">Portal Anime <span class="text-blue-500">Premium</span></h2>
+                    </div>
+                </header>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h3 class="text-2xl font-bold border-l-4 border-blue-500 pl-3 mb-6">Update Terbaru</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            `;
+
+            if(animeList.length === 0) {
+                html += `<div class="col-span-full"><p class="text-slate-400 text-center">Data kosong atau endpoint API berubah.</p></div>`;
+            } else {
+                animeList.forEach(anime => {
+                    const title = anime.title || anime.name || 'Unknown Title';
+                    const image = anime.image || anime.thumbnail || anime.poster || 'https://via.placeholder.com/300x450';
+                    const status = anime.status || anime.type || 'Ongoing';
+                    const eps = anime.episode || anime.eps || '';
+                    
+                    // PERBAIKAN FATAL BUG (Link ID Kosong):
+                    // Mencari key id/endpoint/param secara dinamis agar tombol bisa di-klik
+                    let linkId = anime.endpoint || anime.param || anime.id || anime.slug || '';
+                    if(!linkId) {
+                        for(let key in anime) {
+                            if(typeof anime[key] === 'string' && anime[key].includes('-')) {
+                                linkId = anime[key]; break;
+                            }
+                        }
+                    }
+
+                    // Tentukan apakah card ini mengarah ke episode atau info anime
+                    const isEpisode = linkId.includes('-episode-') || linkId.includes('-eps-');
+                    const targetHash = isEpisode ? `#episode/${linkId}` : `#anime/${linkId}`;
+
+                    html += `
+                        <a href="${targetHash}" class="block bg-slate-800/50 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 transition-all duration-300 card-hover group">
+                            <div class="relative aspect-[3/4] overflow-hidden bg-slate-800">
+                                <img src="${image}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-90"></div>
+                                <div class="absolute bottom-0 p-3 w-full flex justify-between items-end">
+                                    <span class="px-2 py-1 bg-blue-600/90 text-white text-[10px] font-bold rounded">${status}</span>
+                                    ${eps ? `<span class="px-2 py-1 bg-black/60 text-slate-200 text-[10px] font-bold rounded backdrop-blur-sm">${eps}</span>` : ''}
+                                </div>
+                                <div class="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <div class="bg-white/20 backdrop-blur-md rounded-full p-3"><svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                                </div>
+                            </div>
+                            <div class="p-4"><h4 class="font-bold text-sm line-clamp-2 text-slate-200 group-hover:text-blue-400">${title}</h4></div>
+                        </a>
+                    `;
+                });
+            }
+            html += `</div></div>`;
+            appContainer.innerHTML = html;
+        }
+
+        // Halaman 2: Detail Anime
+        async function renderDetail(endpoint) {
+            const res = await fetch(API_PROXY + '/anime/' + endpoint);
+            const data = await res.json();
+            
+            // Ekstrak data (menyesuaikan struktur API)
+            const info = data.data || data.result || data || {};
+            const title = info.title || 'Detail Anime';
+            const image = info.image || info.thumbnail || '';
+            const synopsis = info.synopsis || info.sinopsis || 'Tidak ada sinopsis.';
+            const episodeList = findDataArray(info.episode_list || info.episodes || info.list_episode || info);
+
+            let html = `
+                <div class="max-w-6xl mx-auto px-4 py-10">
+                    <a href="#home" class="inline-flex items-center text-slate-400 hover:text-white mb-6">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Kembali
+                    </a>
+                    <div class="flex flex-col md:flex-row gap-8 bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50">
+                        <div class="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+                            <img src="${image}" class="w-full rounded-xl shadow-2xl" alt="Cover">
+                        </div>
+                        <div class="flex-1">
+                            <h1 class="text-3xl font-black text-white mb-4">${title}</h1>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6">${synopsis}</p>
+                            
+                            <h3 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2">Daftar Episode</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto pr-2">
+            `;
+
+            if(episodeList.length > 0) {
+                episodeList.forEach(eps => {
+                    let epsEndpoint = eps.endpoint || eps.id || eps.param || '';
+                    if(!epsEndpoint) epsEndpoint = endpoint + '-episode-' + (eps.episode || eps.eps);
+                    let epsTitle = eps.title || eps.episode || eps.eps || 'Eps ?';
+                    html += `<a href="#episode/${epsEndpoint}" class="block text-center py-2 bg-slate-800 hover:bg-blue-600 rounded-lg text-sm font-semibold transition-colors border border-slate-700">${epsTitle}</a>`;
+                });
+            } else {
+                html += `<p class="text-slate-500 col-span-full">Episode belum tersedia.</p>`;
+            }
+
+            html += `</div></div></div></div>`;
+            appContainer.innerHTML = html;
+        }
+
+        // Halaman 3: Nonton Episode (Streaming Player)
+        async function renderWatch(endpoint) {
+            const res = await fetch(API_PROXY + '/episode/' + endpoint);
+            const data = await res.json();
+            
+            const info = data.data || data.result || data || {};
+            const title = info.title || 'Streaming Anime';
+            
+            // Mencari URL stream atau Iframe dari JSON response
+            let streamUrl = info.stream_url || info.video || info.iframe || '';
+            if(!streamUrl && info.server && info.server.length > 0) {
+                streamUrl = info.server[0].url || info.server[0].iframe || '';
+            }
+
+            let html = `
+                <div class="max-w-5xl mx-auto px-4 py-8">
+                    <button onclick="window.history.back()" class="inline-flex items-center text-slate-400 hover:text-white mb-6">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Kembali
+                    </button>
+                    
+                    <h2 class="text-2xl font-bold text-white mb-4">${title}</h2>
+                    
+                    <div class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-slate-700 relative flex items-center justify-center">
+            `;
+
+            if(streamUrl) {
+                html += `<iframe src="${streamUrl}" class="w-full h-full absolute inset-0" allowfullscreen="true" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>`;
+            } else {
+                html += `<p class="text-slate-500 text-lg">Video tidak tersedia atau format API tidak dikenali.</p>`;
+            }
+
+            html += `
+                    </div>
+                    <div class="mt-6 bg-blue-900/20 border border-blue-500/30 p-4 rounded-lg">
+                        <p class="text-sm text-blue-200">Jika video tidak dapat diputar, coba refresh halaman atau gunakan server alternatif jika didukung API.</p>
+                    </div>
+                </div>
+            `;
+            appContainer.innerHTML = html;
+        }
+
+        // Jalankan router saat URL hash berubah
+        window.addEventListener('hashchange', router);
+        // Jalankan saat pertama kali dimuat
+        window.addEventListener('DOMContentLoaded', router);
     </script>
 </body>
 </html>
