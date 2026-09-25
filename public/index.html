@@ -76,20 +76,38 @@
         function showLoader() { globalLoader.classList.remove('fade-out'); }
         function hideLoader() { globalLoader.classList.add('fade-out'); }
 
-        const errorHTML = (msg) => `
-            <div class="text-center py-32 px-4">
-                <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Terjadi Kesalahan</h3>
-                <p class="text-gray-400 mb-6">${msg}</p>
-                <button onclick="router()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg">Coba Lagi</button>
+        const errorHTML = (msg, detail = "") => `
+            <div class="text-center py-32 px-4 max-w-2xl mx-auto">
+                <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-6"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Terjadi Kesalahan</h3>
+                <p class="text-gray-400 mb-4">${msg}</p>
+                ${detail ? `<p class="text-xs text-red-400 bg-red-900/20 p-3 rounded border border-red-900/50 mb-6 font-mono break-words">${detail}</p>` : ''}
+                <button onclick="router()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">Coba Lagi</button>
             </div>
         `;
+
+        // Wrapper Fetch Tahan Banting
+        async function fetchAPI(endpoint) {
+            try {
+                const res = await fetch(BASE_PROXY + endpoint);
+                const json = await res.json();
+                
+                // Menangkap error dari proxy.js (jika ada response code 500/error)
+                if (!res.ok || json.error) {
+                    throw new Error(json.details || json.error || `HTTP Error: ${res.status}`);
+                }
+                return json;
+            } catch (e) {
+                console.error("Fetch API Error:", e);
+                throw e; 
+            }
+        }
 
         function extractData(data) {
             if (!data) return [];
             if (Array.isArray(data)) return data;
             if (typeof data === 'object') {
-                const keys = ['data', 'result', 'anime_list', 'ongoing_anime', 'complete_anime', 'anime', 'episode_list', 'episodes', 'list'];
+                const keys = ['data', 'result', 'anime_list', 'ongoing_anime', 'complete_anime', 'anime', 'episode_list', 'episodes', 'list', 'home', 'on_going', 'completed'];
                 for (let k of keys) {
                     if (Array.isArray(data[k])) return data[k];
                 }
@@ -100,12 +118,10 @@
         function extractSlug(item) {
             if (!item) return '';
             let slug = item.endpoint || item.slug || item.id || '';
-            
             if (slug) {
                 slug = slug.replace('/anime/', '').replace('/episode/', '').replace(/^\/+|\/+$/g, '');
                 return slug;
             }
-
             for (let key in item) {
                 if (typeof item[key] === 'string' && item[key].includes('-') && !item[key].includes(' ') && !item[key].startsWith('http')) {
                     return item[key].replace(/^\/+|\/+$/g, '');
@@ -115,12 +131,11 @@
         }
 
         function generateAnimeCards(animeList) {
-            if (!animeList || animeList.length === 0) return `<div class="col-span-full py-10 text-center text-gray-500">Tidak ada data.</div>`;
+            if (!animeList || animeList.length === 0) return `<div class="col-span-full py-10 text-center text-gray-500 bg-[#1a1f2e] rounded-xl border border-gray-800">Tidak ada data anime.</div>`;
             
             return animeList.map(anime => {
                 const title = anime.judul || anime.title || anime.name || 'Unknown Title';
                 const image = anime.thumb || anime.thumbnail || anime.image || anime.poster || 'https://via.placeholder.com/300x450';
-                
                 let badgeText = anime.episode || anime.eps || anime.status || '';
                 
                 const slug = extractSlug(anime);
@@ -156,20 +171,20 @@
                 else if (hash.startsWith('#search/')) await renderList(API.SEARCH + hash.replace('#search/', ''), "Hasil Pencarian");
                 else await renderHome();
             } catch (error) {
-                console.error(error);
-                appContainer.innerHTML = errorHTML("Gagal menarik data dari API. Pastikan endpoint Otakudesu aktif.");
+                console.error("Router Error:", error);
+                appContainer.innerHTML = errorHTML("Gagal menarik data dari server atau API Otakudesu sedang bermasalah.", error.message);
             } finally {
                 hideLoader();
             }
         }
 
         async function renderHome() {
-            const res = await fetch(BASE_PROXY + API.HOME);
-            const json = await res.json();
-            const rootData = json.data || json.result || json || {};
+            const json = await fetchAPI(API.HOME);
+            // Fallback ekstra kuat untuk data Home
+            const rootData = json.home || json.data || json.result || json || {};
             
-            let ongoing = rootData.ongoing_anime || rootData.on_going || [];
-            let completed = rootData.complete_anime || rootData.completed || [];
+            let ongoing = rootData.ongoing_anime || rootData.on_going || rootData.ongoing || extractData(rootData.ongoing_anime) || [];
+            let completed = rootData.complete_anime || rootData.completed || rootData.complete || extractData(rootData.complete_anime) || [];
 
             appContainer.innerHTML = `
                 <div class="max-w-[1400px] mx-auto px-4 py-10 flex flex-col lg:flex-row gap-8">
@@ -192,42 +207,41 @@
         }
 
         async function renderDetail(slug) {
-            const res = await fetch(BASE_PROXY + API.DETAIL + slug);
-            const json = await res.json();
-            const info = json.data || json.result || json;
+            const json = await fetchAPI(API.DETAIL + slug);
+            const info = json.data || json.result || json || {};
             
             const title = info.judul || info.title || info.name || 'Detail Anime';
             const image = info.thumb || info.thumbnail || info.image || info.poster || '';
-            const synopsis = info.sinopsis || info.synopsis || '-';
-            const episodes = extractData(info.episode_list || info.episodes || info);
+            const synopsis = info.sinopsis || info.synopsis || 'Sinopsis tidak tersedia.';
+            const episodes = extractData(info.episode_list || info.episodes || info.episode || info);
 
             let html = `
                 <div class="max-w-[1400px] mx-auto px-4 py-8">
-                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-6 bg-[#1a1f2e] px-4 py-2 rounded-lg text-sm border border-gray-800">&larr; Kembali</button>
-                    <div class="flex flex-col md:flex-row gap-8 bg-[#1a1f2e] p-6 rounded-xl border border-gray-800">
+                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-6 bg-[#1a1f2e] px-4 py-2 rounded-lg text-sm border border-gray-800 transition-colors">&larr; Kembali</button>
+                    <div class="flex flex-col md:flex-row gap-8 bg-[#1a1f2e] p-6 rounded-xl border border-gray-800 shadow-lg">
                         <div class="w-full md:w-64 flex-shrink-0">
-                            <img src="${image}" class="w-full rounded-lg shadow-lg" alt="${title}">
-                            <div class="mt-4 bg-gray-900/80 p-3 rounded text-center">
-                                <p class="text-xs text-gray-500">Status</p>
+                            ${image ? `<img src="${image}" class="w-full rounded-lg shadow-md" alt="${title}">` : `<div class="w-full aspect-[3/4] bg-gray-800 rounded-lg flex items-center justify-center">No Image</div>`}
+                            <div class="mt-4 bg-gray-900/80 p-3 rounded text-center border border-gray-800">
+                                <p class="text-xs text-gray-500 uppercase tracking-wider">Status</p>
                                 <p class="font-bold text-purple-400">${info.status || 'Unknown'}</p>
                             </div>
                         </div>
                         <div class="flex-1">
                             <h1 class="text-3xl font-bold text-white mb-4">${title}</h1>
-                            <p class="text-sm text-gray-400 leading-relaxed mb-8 bg-gray-900/50 p-4 rounded">${synopsis}</p>
+                            <div class="text-sm text-gray-400 leading-relaxed mb-8 bg-gray-900/50 p-5 rounded-lg border border-gray-800/50">${synopsis}</div>
                             
                             <h3 class="text-sm font-bold text-gray-300 mb-4 border-b border-gray-800 pb-2">Daftar Episode</h3>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-72 overflow-y-auto">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-80 overflow-y-auto pr-2">
             `;
 
-            if(episodes.length > 0) {
+            if(episodes && episodes.length > 0) {
                 episodes.forEach(eps => {
                     let epSlug = extractSlug(eps);
                     let epTitle = eps.judul || eps.title || eps.episode || 'Eps';
-                    html += `<a href="#episode/${epSlug}" class="py-2 bg-gray-800 hover:bg-purple-600 text-center text-gray-300 hover:text-white rounded text-xs font-semibold truncate px-2">${epTitle}</a>`;
+                    html += `<a href="#episode/${epSlug}" class="py-2.5 bg-gray-800 hover:bg-purple-600 text-center text-gray-300 hover:text-white rounded-lg text-xs font-semibold truncate px-3 transition-colors border border-gray-700 hover:border-purple-500">${epTitle}</a>`;
                 });
             } else {
-                html += `<div class="col-span-full text-center text-gray-500">Episode belum tersedia.</div>`;
+                html += `<div class="col-span-full text-center text-gray-500 py-4">Data episode belum tersedia dari API.</div>`;
             }
 
             html += `</div></div></div></div>`;
@@ -235,8 +249,7 @@
         }
 
         async function renderWatch(slug) {
-            const res = await fetch(BASE_PROXY + API.EPISODE + slug);
-            const json = await res.json();
+            const json = await fetchAPI(API.EPISODE + slug);
             const info = json.data || json.result || json || {};
             
             let streamUrl = info.stream_url || info.video || info.iframe || info.link_stream || '';
@@ -248,20 +261,33 @@
 
             appContainer.innerHTML = `
                 <div class="max-w-[1200px] mx-auto px-4 py-8">
-                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-6 bg-[#1a1f2e] px-4 py-2 rounded-lg text-sm border border-gray-800">&larr; Kembali</button>
+                    <button onclick="window.history.back()" class="text-gray-400 hover:text-white mb-6 bg-[#1a1f2e] px-4 py-2 rounded-lg text-sm border border-gray-800 transition-colors">&larr; Kembali</button>
                     <h2 class="text-2xl font-bold text-white mb-6 border-l-4 border-purple-500 pl-3">${info.judul || info.title || 'Streaming Anime'}</h2>
                     
-                    <div class="aspect-video bg-black rounded-xl overflow-hidden border border-gray-800 flex items-center justify-center">
+                    <div class="aspect-video bg-black rounded-xl overflow-hidden border border-gray-800 flex items-center justify-center shadow-2xl">
                         ${streamUrl ? `<iframe src="${streamUrl}" class="w-full h-full" allowfullscreen="true" frameborder="0"></iframe>` 
-                        : `<p class="text-gray-500"><i class="fas fa-video-slash text-4xl block text-center mb-2"></i>Sumber video tidak ditemukan.</p>`}
+                        : `<p class="text-gray-500 flex flex-col items-center"><i class="fas fa-video-slash text-4xl mb-3"></i>Sumber video streaming belum tersedia atau gagal dimuat.</p>`}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function renderList(endpoint, title) {
+            const json = await fetchAPI(endpoint);
+            const animeList = extractData(json);
+
+            appContainer.innerHTML = `
+                <div class="max-w-[1400px] mx-auto px-4 py-10">
+                    <h2 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple-500 pl-3">${title}</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        ${generateAnimeCards(animeList)}
                     </div>
                 </div>
             `;
         }
 
         async function renderSchedule() {
-            const res = await fetch(BASE_PROXY + API.SCHEDULE);
-            const json = await res.json();
+            const json = await fetchAPI(API.SCHEDULE);
             const schedData = json.data || json.result || json || [];
 
             let html = `<div class="max-w-[1400px] mx-auto px-4 py-10"><h2 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple-500 pl-3">Jadwal Rilis Mingguan</h2><div class="space-y-10">`;
@@ -280,7 +306,7 @@
             if (daysArray.length > 0) {
                 daysArray.forEach(dayInfo => {
                     let dayName = dayInfo.day || dayInfo.hari || 'Unknown Day';
-                    let animeList = dayInfo.anime_list || dayInfo.animeList || dayInfo.anime || []; 
+                    let animeList = dayInfo.anime_list || dayInfo.animeList || dayInfo.anime || extractData(dayInfo) || []; 
                     
                     if (animeList.length > 0) {
                         html += `
@@ -294,7 +320,7 @@
                     }
                 });
             } else {
-                html += `<div class="text-gray-500 py-10 text-center w-full">Data jadwal saat ini tidak tersedia dari server.</div>`;
+                html += `<div class="text-gray-500 py-10 text-center w-full bg-[#1a1f2e] rounded-xl border border-gray-800">Data jadwal saat ini tidak tersedia dari server API.</div>`;
             }
             
             html += `</div></div>`;
@@ -302,20 +328,23 @@
         }
 
         async function renderGenres() {
-            const res = await fetch(BASE_PROXY + API.GENRES);
-            const json = await res.json();
+            const json = await fetchAPI(API.GENRES);
             const genres = extractData(json);
             
-            let html = `<div class="max-w-[1400px] mx-auto px-4 py-10"><h2 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple-500 pl-3">Semua Genre</h2><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">`;
+            let html = `<div class="max-w-[1400px] mx-auto px-4 py-10"><h2 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple-500 pl-3">Semua Genre</h2><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">`;
             
-            genres.forEach(g => {
-                let name = g.nama || g.title || g.name || g;
-                let slug = extractSlug(g) || (typeof name === 'string' ? name.toLowerCase().replace(/ /g, '-') : '');
-                
-                if (name) {
-                    html += `<a href="#genre/${slug}" class="bg-[#1a1f2e] hover:bg-purple-600 text-center py-4 rounded-xl border border-gray-800 font-semibold text-gray-300 hover:text-white">${name}</a>`;
-                }
-            });
+            if (genres.length > 0) {
+                genres.forEach(g => {
+                    let name = g.nama || g.title || g.name || g;
+                    let slug = extractSlug(g) || (typeof name === 'string' ? name.toLowerCase().replace(/ /g, '-') : '');
+                    
+                    if (name) {
+                        html += `<a href="#genre/${slug}" class="bg-[#1a1f2e] hover:bg-purple-600 text-center py-4 px-2 rounded-xl border border-gray-800 font-semibold text-gray-300 hover:text-white transition-colors truncate text-sm">${name}</a>`;
+                    }
+                });
+            } else {
+                html += `<div class="col-span-full text-center text-gray-500 bg-[#1a1f2e] py-10 rounded-xl border border-gray-800">Daftar genre tidak ditemukan.</div>`;
+            }
             
             html += `</div></div>`;
             appContainer.innerHTML = html;
