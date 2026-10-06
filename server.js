@@ -13,6 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const cache = new TTLCache(5 * 60 * 1000);
 
+// Keep the catalog request intentionally simple; Vercel should deploy this exact working path.
 async function getHTML(url) {
   const hit = cache.get(url);
   if (hit) return hit;
