@@ -11,7 +11,7 @@
 <section class="hero"><div class="heroin"><div class="kicker">TLIBRARY STREAMING</div><h1>Temukan tontonan berikutnya.</h1><p>Katalog film dan series yang diperbarui secara dinamis, lengkap dengan halaman detail, season, episode, cast, pencarian, dan riwayat tontonan.</p><div class="actions"><button class="btn primary" onclick="loadList('movie')">Jelajahi Film</button><button class="btn dark" onclick="loadList('tv')">Lihat Series</button></div></div></section>
 <main class="wrap"><section class="section"><div class="sectionhead"><h2 id="sectionTitle">Pilihan Terbaru</h2><small id="count"></small></div><div id="grid" class="grid"><div class="loading">Memuat katalog…</div></div><div id="pages" class="pages"></div></section></main>
 <div id="drawer" class="drawer"><div id="backdrop" class="backdrop"><button class="x" onclick="closeDetail()">✕</button></div><div class="detail" id="detail"></div></div>
-<div id="player" class="player"><div class="playerbox"><button class="x" onclick="closePlayer()">✕</button><video id="video" controls playsinline></video><div id="playerNotice" class="notice">Player siap untuk sumber video yang kamu miliki atau yang memang mengizinkan embedding.</div></div></div>
+<div id="player" class="player"><div class="playerbox"><button class="x" onclick="closePlayer()">✕</button><video id="video" controls playsinline></video><iframe id="playerFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:none"></iframe><div id="playerNotice" class="notice">Player siap untuk sumber video yang kamu miliki atau yang memang mengizinkan embedding.</div></div></div>
 <div id="toast" class="toast"></div>
 <script>
 const API='/api';let page=1,type='movie',current=null;
@@ -25,10 +25,20 @@ async function doSearch(e){e.preventDefault();const q=document.getElementById('q
 async function detail(t,id){document.getElementById('drawer').classList.add('open');document.getElementById('detail').innerHTML='<div class="loading">Memuat detail…</div>';try{const d=await api(`${API}/detail?type=${t}&id=${id}`);current=d.data;document.getElementById('backdrop').style.backgroundImage=current.backdrop?`url("${current.backdrop}")`:'';drawDetail()}catch(e){document.getElementById('detail').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}}
 function drawDetail(){const x=current;const seasons=x.seasons||[];document.getElementById('detail').innerHTML=`<div class="kicker">${esc(x.type)} · ${esc(x.year)}</div><h1>${esc(x.title)}</h1><div class="chips"><span class="chip">★ ${esc(x.rating||'-')}</span>${(x.genres||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join('')}</div><p class="syn">${esc(x.synopsis||'Sinopsis tidak tersedia.')}</p>${seasons.length?`<h2>Season</h2><div class="seasons">${seasons.map((s,i)=>`<button class="season ${i===0?'active':''}" onclick="selectSeason(this,'${esc(s)}')">${esc(s)}</button>`).join('')}</div>`:''}<h2>Episode</h2><div class="episodes" id="episodes">${x.type==='tv'?(x.episodeCount?`<div class="notice" style="grid-column:1/-1">${esc(x.episodeCount)} episode tersedia di sumber. Pilih episode dari sumber resmi/berizin untuk pemutaran.</div>`:'<div class="notice" style="grid-column:1/-1">Daftar episode tersedia di halaman sumber.</div>'):'<button class="episode" onclick="openSourcePlayer()"><strong>▶ Putar di VeloFlix</strong><span>Buka halaman playback sumber</span></button>'}</div>${x.cast?.length?`<h2>Cast</h2><div class="cast">${x.cast.map(p=>`<div class="person"><img loading="lazy" src="${esc(p.image)}"><b>${esc(p.name)}</b><small>${esc(p.character||'')}</small></div>`).join('')}</div>`:''}<p class="source">Metadata source: <a href="${esc(x.source)}" target="_blank" rel="noopener">VeloFlix</a></p>`}
 function selectSeason(btn,name){document.querySelectorAll('.season').forEach(x=>x.classList.remove('active'));btn.classList.add('active');showToast(name+' dipilih. Episode ditampilkan dari sumber saat endpoint season tersedia.')}
-function openSourcePlayer(){if(current?.watchUrl)window.open(current.watchUrl,'_blank','noopener');else showToast('URL playback belum tersedia.')}
+function openSourcePlayer(){
+ const player=document.getElementById('player'),frame=document.getElementById('playerFrame'),video=document.getElementById('video');
+ if(current?.playerUrl){
+   video.pause();video.removeAttribute('src');video.style.display='none';
+   frame.src=current.playerUrl;frame.style.display='block';
+   document.getElementById('playerNotice').textContent='Player sumber dimuat di TLIBRARY.';
+   player.classList.add('open');
+ }else{
+   showToast('Player embed publik tidak ditemukan di halaman sumber.');
+ }
+}
 function openAuthorizedPlayer(){document.getElementById('player').classList.add('open');document.getElementById('playerNotice').textContent='Player belum memiliki sumber video berizin. Set MEDIA_BASE_URL di server untuk media milikmu sendiri.'}
 function closeDetail(){document.getElementById('drawer').classList.remove('open')}
-function closePlayer(){const v=document.getElementById('video');v.pause();v.removeAttribute('src');document.getElementById('player').classList.remove('open')}
+function closePlayer(){const v=document.getElementById('video'),frame=document.getElementById('playerFrame');v.pause();v.removeAttribute('src');frame.src='about:blank';frame.style.display='none';v.style.display='block';document.getElementById('player').classList.remove('open')}
 function fail(e){document.getElementById('grid').innerHTML='<div class="empty">Gagal memuat: '+esc(e.message)+'</div>'}
 function showToast(s){const t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
 home();
