@@ -1,7 +1,13 @@
 import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { TTLCache } from './lib/cache.js';
 import { BASE, abs, clean, uniq, numericId } from './lib/utils.js';
 import { parseCards, parseDetail } from './lib/scraper.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.join(__dirname, 'public');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +21,9 @@ async function getHTML(url) {
   return cache.set(url, await response.text());
 }
 
-app.use(express.static('public'));
+app.use(express.static(publicDir));
+
+app.get('/', (_, res) => res.sendFile(path.join(publicDir, 'index.html')));
 
 app.get('/api/home', async (_, res) => {
   try { const html = await getHTML(BASE + '/'); res.json({ ok: true, items: parseCards(html).slice(0, 100), source: BASE }); }
