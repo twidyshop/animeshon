@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TTLCache } from './lib/cache.js';
 import { BASE, abs, clean, uniq, numericId } from './lib/utils.js';
-import { parseCards, parseDetail } from './lib/scraper.js';
+import { parseCards, parseDetail, parsePlayer } from './lib/scraper.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -68,6 +68,20 @@ app.get('/api/watch', (req, res) => {
   const id = String(req.query.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
   if (!src) return res.json({ ok: true, playable: false, message: 'Set MEDIA_BASE_URL to an authorized video host.' });
   res.json({ ok: true, playable: true, src: `${src.replace(/\/$/, '')}/${id}.mp4` });
+});
+
+app.get('/api/player', async (req, res) => {
+  try {
+    const type = req.query.type === 'tv' ? 'tv' : 'movie';
+    const id = String(req.query.id || '').replace(/\D/g, '');
+    if (!id) return res.status(400).json({ ok: false, error: 'Missing id' });
+    const url = BASE + '/watch/' + type + '/' + id + '?play=1';
+    const html = await getHTML(url);
+    const player = parsePlayer(html, url);
+    res.json({ ok: true, ...player });
+  } catch (e) {
+    res.status(502).json({ ok: false, error: e.message });
+  }
 });
 
 app.get('/api/health', (_, res) => res.json({ ok: true, source: BASE, time: new Date().toISOString() }));
